@@ -329,7 +329,7 @@ func TestInitializer_oauthEnvVars(t *testing.T) {
 		envVars, err := envVarsProvider.Get(context.Background(), p)
 
 		require.NoError(t, err)
-		assert.Len(t, envVars, 5)
+		assert.Len(t, envVars, 6)
 		assert.Equal(t, "GF_VERSION=", envVars[0])
 		assert.Equal(t, "GF_APP_URL=https://myorg.com/", envVars[1])
 		assert.Equal(t, "GF_PLUGIN_APP_CLIENT_ID=clientID", envVars[2])
@@ -349,5 +349,17 @@ func TestInitalizer_awsEnvVars(t *testing.T) {
 		envVars, err := envVarsProvider.Get(context.Background(), p)
 		require.NoError(t, err)
 		assert.ElementsMatch(t, []string{"GF_VERSION=", "AWS_AUTH_AssumeRoleEnabled=true", "AWS_AUTH_AllowedAuthProviders=grafana_assume_role,keys", "AWS_AUTH_EXTERNAL_ID=mock_external_id"}, envVars)
+	})
+}
+
+func TestInitalizer_featureToggleEnvVar(t *testing.T) {
+	t.Run("backend datasource with feature toggle", func(t *testing.T) {
+		p := &plugins.Plugin{}
+		envVarsProvider := NewProvider(&config.Cfg{
+			Features: featuremgmt.WithFeatures("feat-1", true),
+		}, nil)
+		envVars, err := envVarsProvider.Get(context.Background(), p)
+		require.NoError(t, err)
+		assert.ElementsMatch(t, []string{"GF_VERSION=", "GF_FEATURE_TOGGLES_ENABLE=feat-1"}, envVars)
 	})
 }
