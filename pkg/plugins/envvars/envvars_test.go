@@ -384,6 +384,5 @@ func TestInitializer_featureToggleEnvVar(t *testing.T) {
 			_, ok := featuresLookup[f]
 			assert.True(t, ok)
 		}
-
 	})
 }
