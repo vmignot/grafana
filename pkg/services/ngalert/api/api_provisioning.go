@@ -10,6 +10,7 @@ import (
 	"github.com/grafana/grafana/pkg/api/response"
 	"github.com/grafana/grafana/pkg/infra/log"
 	contextmodel "github.com/grafana/grafana/pkg/services/contexthandler/model"
+	"github.com/grafana/grafana/pkg/services/ngalert/api/hcl"
 	"github.com/grafana/grafana/pkg/services/ngalert/api/tooling/definitions"
 	alerting_models "github.com/grafana/grafana/pkg/services/ngalert/models"
 	"github.com/grafana/grafana/pkg/services/ngalert/provisioning"
@@ -489,7 +490,7 @@ func extractExportRequest(c *contextmodel.ReqContext) definitions.ExportQueryPar
 	}
 
 	queryFormat := c.Query("format")
-	if queryFormat == "yaml" || queryFormat == "json" {
+	if queryFormat == "yaml" || queryFormat == "json" || queryFormat == "hcl" {
 		format = queryFormat
 	}
 
@@ -502,11 +503,29 @@ func extractExportRequest(c *contextmodel.ReqContext) definitions.ExportQueryPar
 }
 
 func exportResponse(c *contextmodel.ReqContext, body definitions.AlertingFileExport) response.Response {
+	hclResponse := func(status int, b interface{}) *response.NormalResponse {
+		hclBody, err := hcl.MarshalAlertingFileExport(body)
+		if err != nil {
+			return response.Error(500, "body hcl encode", err)
+		}
+		return response.Respond(status, hclBody).
+			SetHeader("Content-Type", "text/hcl")
+	}
 	params := extractExportRequest(c)
 	if params.Download {
 		r := response.JSONDownload
 		if params.Format == "yaml" {
 			r = response.YAMLDownload
+		} else if params.Format == "hcl" {
+			r = func(status int, b interface{}, filename string) *response.NormalResponse {
+				hclBody, err := hcl.MarshalAlertingFileExport(body)
+				if err != nil {
+					return response.Error(500, "body hcl encode", err)
+				}
+				return hclResponse(status, hclBody).
+					SetHeader("Content-Type", "application/terraform+hcl").
+					SetHeader("Content-Disposition", fmt.Sprintf(`attachment;filename="%s"`, filename))
+			}
 		}
 		return r(http.StatusOK, body, fmt.Sprintf("export.%s", params.Format))
 	}
@@ -514,6 +533,8 @@ func exportResponse(c *contextmodel.ReqContext, body definitions.AlertingFileExp
 	r := response.JSON
 	if params.Format == "yaml" {
 		r = response.YAML
+	} else if params.Format == "hcl" {
+		r = hclResponse
 	}
 	return r(http.StatusOK, body)
 }

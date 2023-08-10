@@ -151,11 +151,13 @@ func AlertRuleGroupExportFromAlertRuleGroupWithFolderTitle(d models.AlertRuleGro
 		rules = append(rules, alert)
 	}
 	return definitions.AlertRuleGroupExport{
-		OrgID:    d.OrgID,
-		Name:     d.Title,
-		Folder:   d.FolderTitle,
-		Interval: model.Duration(time.Duration(d.Interval) * time.Second),
-		Rules:    rules,
+		OrgID:           d.OrgID,
+		Name:            d.Title,
+		Folder:          d.FolderTitle,
+		FolderUID:       d.FolderUID,
+		Interval:        model.Duration(time.Duration(d.Interval) * time.Second),
+		IntervalSeconds: d.Interval,
+		Rules:           rules,
 	}, nil
 }
 
@@ -213,6 +215,7 @@ func AlertQueryExportFromAlertQuery(query models.AlertQuery) (definitions.AlertQ
 		},
 		DatasourceUID: query.DatasourceUID,
 		Model:         mdl,
+		ModelString:   string(query.Model),
 	}, nil
 }
 
