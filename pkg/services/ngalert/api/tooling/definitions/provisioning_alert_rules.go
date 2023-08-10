@@ -220,6 +220,7 @@ type AlertRuleExport struct {
 	NoDataState  NoDataState         `json:"noDataState" yaml:"noDataState" hcl:"no_data_state"`
 	ExecErrState ExecutionErrorState `json:"execErrState" yaml:"execErrState" hcl:"exec_err_state"`
 	For          model.Duration      `json:"for" yaml:"for" hcl:"for"`
+	ForSeconds   int64               `json:"-" yaml:"-" hcl:"for"`
 	Annotations  map[string]string   `json:"annotations,omitempty" yaml:"annotations,omitempty" hcl:"annotations"`
 	Labels       map[string]string   `json:"labels,omitempty" yaml:"labels,omitempty" hcl:"labels"`
 	IsPaused     bool                `json:"isPaused" yaml:"isPaused" hcl:"is_paused"`
@@ -227,10 +228,15 @@ type AlertRuleExport struct {
 
 // AlertQueryExport is the provisioned export of models.AlertQuery.
 type AlertQueryExport struct {
-	RefID             string                 `json:"refId" yaml:"refId" hcl:"ref_id"`
-	QueryType         string                 `json:"queryType,omitempty" yaml:"queryType,omitempty" hcl:"query_type"`
-	RelativeTimeRange RelativeTimeRange      `json:"relativeTimeRange,omitempty" yaml:"relativeTimeRange,omitempty" hcl:"relative_time_range,block"`
-	DatasourceUID     string                 `json:"datasourceUid" yaml:"datasourceUid" hcl:"datasource_uid"`
-	Model             map[string]interface{} `json:"model" yaml:"model"`
-	ModelString       string                 `json:"-" yaml:"-" hcl:"model"`
+	RefID             string                  `json:"refId" yaml:"refId" hcl:"ref_id"`
+	QueryType         string                  `json:"queryType,omitempty" yaml:"queryType,omitempty" hcl:"query_type"`
+	RelativeTimeRange RelativeTimeRangeExport `json:"relativeTimeRange,omitempty" yaml:"relativeTimeRange,omitempty" hcl:"relative_time_range,block"`
+	DatasourceUID     string                  `json:"datasourceUid" yaml:"datasourceUid" hcl:"datasource_uid"`
+	Model             map[string]interface{}  `json:"model" yaml:"model"`
+	ModelString       string                  `json:"-" yaml:"-" hcl:"model"`
+}
+
+type RelativeTimeRangeExport struct {
+	FromSeconds int64 `json:"from" yaml:"from" hcl:"from"`
+	ToSeconds   int64 `json:"to" yaml:"to" hcl:"to"`
 }

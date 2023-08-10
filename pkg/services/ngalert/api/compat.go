@@ -209,9 +209,9 @@ func AlertQueryExportFromAlertQuery(query models.AlertQuery) (definitions.AlertQ
 	return definitions.AlertQueryExport{
 		RefID:     query.RefID,
 		QueryType: query.QueryType,
-		RelativeTimeRange: definitions.RelativeTimeRange{
-			From: definitions.Duration(query.RelativeTimeRange.From),
-			To:   definitions.Duration(query.RelativeTimeRange.To),
+		RelativeTimeRange: definitions.RelativeTimeRangeExport{
+			FromSeconds: int64(time.Duration(query.RelativeTimeRange.From).Seconds()),
+			ToSeconds:   int64(time.Duration(query.RelativeTimeRange.To).Seconds()),
 		},
 		DatasourceUID: query.DatasourceUID,
 		Model:         mdl,

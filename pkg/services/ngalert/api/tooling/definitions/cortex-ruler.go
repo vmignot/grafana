@@ -415,8 +415,8 @@ type AlertQuery struct {
 // RelativeTimeRange is the per query start and end time
 // for requests.
 type RelativeTimeRange struct {
-	From Duration `json:"from" yaml:"from" hcl:"from"`
-	To   Duration `json:"to" yaml:"to" hcl:"to"`
+	From Duration `json:"from" yaml:"from"`
+	To   Duration `json:"to" yaml:"to"`
 }
 
 // Duration is a type used for marshalling durations.
