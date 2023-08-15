@@ -5,7 +5,7 @@ import { Tab, TabContent, TabsBar } from '@grafana/ui';
 
 import GettingStarted, { WelcomeHeader } from './GettingStarted';
 import Insights from './Insights';
-import { AlertingPageWrapper } from './components/AlertingPageWrapper';
+import { AlertmanagerPageWrapper } from './components/AlertingPageWrapper';
 import { AlertingFeature } from './features';
 
 type HomeTabs = 'insights' | 'gettingStarted';
@@ -14,7 +14,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<HomeTabs>('insights');
 
   return (
-    <AlertingPageWrapper pageId={'alerting'}>
+    <AlertmanagerPageWrapper pageId={'alerting'} accessType={'instance'}>
       <Enable feature={AlertingFeature.InsightsPage}>
         <WelcomeHeader />
         <TabsBar>
@@ -43,6 +43,6 @@ export default function Home() {
       <Disable feature={AlertingFeature.InsightsPage}>
         <GettingStarted showWelcomeHeader={true} />
       </Disable>
-    </AlertingPageWrapper>
+    </AlertmanagerPageWrapper>
   );
 }
