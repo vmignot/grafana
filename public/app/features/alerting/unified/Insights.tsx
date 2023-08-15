@@ -9,6 +9,8 @@ import { getFiringAlertsScene } from './insights/grafana/FiringAlertsPercentage'
 import { getFiringAlertsRateScene } from './insights/grafana/FiringAlertsRate';
 import { getMostFiredInstancesScene } from './insights/grafana/MostFiredInstancesTable';
 import { getMostFiredRulesScene } from './insights/grafana/MostFiredRulesTable';
+import { useAlertmanager } from './state/AlertmanagerContext';
+import { GRAFANA_RULES_SOURCE_NAME } from './utils/datasource';
 
 //all cloud instances are guaranteed to have this datasource uid for the alert state history loki datasource
 const datasourceUid = 'grafanacloud-alert-state-history';
@@ -42,11 +44,15 @@ function getGrafanaScenes() {
 
 export default function Insights() {
   const styles = useStyles2(getStyles);
-  const scene = getGrafanaScenes();
+
+  const { selectedAlertmanager } = useAlertmanager();
+  const isGrafanaAmSelected = selectedAlertmanager === GRAFANA_RULES_SOURCE_NAME;
+
+  const scene = isGrafanaAmSelected ? getGrafanaScenes() : null;
 
   return (
     <div className={styles.container}>
-      <scene.Component model={scene} />
+      {(scene && <scene.Component model={scene} />) || 'There are no panels for the selected alertmanager'}
     </div>
   );
 }
