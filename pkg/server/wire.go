@@ -431,8 +431,6 @@ var wireBaseCLISet = wire.NewSet(
 	licensing.ProvideService,
 	wire.Bind(new(licensing.Licensing), new(*licensing.OSSLicensingService)),
 	hooks.ProvideService,
-	// backgroundsvcs.ProvideBackgroundServiceRegistry,
-	// wire.Bind(new(registry.BackgroundServiceRegistry), new(*backgroundsvcs.BackgroundServiceRegistry)),
 )
 
 func InitializeForCLITarget(cla setting.CommandLineArgs) (ModuleRunner, error) {
