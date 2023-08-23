@@ -137,7 +137,8 @@ Starting from Grafana 9, RBAC has been enabled by default. An option to disable 
 
 #### Migration path
 
-No action is needed&mdash;migration is automatic. Users' current roles, permissions, SSO mapping, and other authorization functionality will continue to work as before.
+As the "General" (default) folder permissions are not editable, your users might lose access to dashboards in this folder. You might want to migrate your dashboard to custom folders, where you'll be able to set permissions.
+Otherwise, no action is needed&mdash;migration is automatic. Users' current roles, permissions, SSO mapping, and other authorization functionality will continue to work as before.
 
 ### Usernames are now case-insensitive by default
 
